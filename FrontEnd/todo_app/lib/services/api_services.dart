@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'dart:convert';
 
 class ApiService {
@@ -9,7 +10,7 @@ class ApiService {
     if (response.statusCode == 200) {
       return jsonDecode(utf8.decode(response.bodyBytes));
     } else {
-      throw Exception('Error: Failed to CR request');
+      throw Exception('Error: Failed to request');
     }
   }
 
@@ -26,7 +27,25 @@ class ApiService {
       }),
     );
     if (response.statusCode != 201) {
-      throw Exception('Error: Failed to RUD request');
+      throw Exception('Error: Failed to request');
+    }
+  }
+
+  Future<void> updateTask(int id, String title, String description,
+      bool iscompleted, String duedate, String updateat) async {
+    final response = await http.put(
+      Uri.parse('$apiUrl/tasks/$id/'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        'title': title,
+        'description': description,
+        'is_completed': iscompleted,
+        'duedate': duedate,
+        'updated_at': updateat,
+      }),
+    );
+    if (response.statusCode != 200) {
+      throw Exception('Error: Failed to request');
     }
   }
 }
